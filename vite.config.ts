@@ -9,8 +9,8 @@ export default defineConfig({
       output: {
         entryFileNames: 'main.js',
         chunkFileNames: 'chunk-[hash].js',
-        assetFileNames: 'asset.[extname]',
+        assetFileNames: 'asset[extname]',
       },
     }
-  }
+  },
 })

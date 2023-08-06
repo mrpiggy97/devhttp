@@ -1,9 +1,10 @@
 import './App.css'
+import Command from './components/Command'
 
 function App() {
   return (
     <div>
-      <span>nyahallo</span>
+      <Command/>
     </div>
   )
 }
