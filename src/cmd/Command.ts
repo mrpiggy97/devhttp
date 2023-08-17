@@ -1,7 +1,13 @@
-export type Executor = (flags : Map<string,string | undefined>, optFlags : Map<string, string | undefined>) => string
+export type Log = {
+    message : string,
+    error : boolean
+}
+
+
+export type Executor = (flags : Map<string,string | undefined>, optFlags : Map<string, string | undefined>) => Log
 
 interface ICMD{
-    Execute(args : string[]) : string
+    Execute(args : string[]) : Log
 }
 
 export class SubCommand implements ICMD{
@@ -67,10 +73,13 @@ export class SubCommand implements ICMD{
         })
         return true
     }
-    public Execute(args : string[]) : string{
+    public Execute(args : string[]) : Log{
         const flagsValid : boolean = this.setAndVerifyFlags(args)
         if(!flagsValid){
-            return "flags provided are not valid"
+            return {
+                message:"flags provided are not valid",
+                error : true
+            }
         }
         return this.executor(this.flags,this.optFlags)
     }
@@ -86,19 +95,25 @@ export class Command implements ICMD{
             this.subCommands.set(cmd.name,cmd)
         })
     }
-    public Execute(args : string[]) : string{
+    public Execute(args : string[]) : Log{
         // at this stage args should look something similar to
         // create --name hello --link https://www.thelink.com
         // link will be an optional flag while name required
         // create is the subCommand, so the first step would be to verify
         // that a subCommand with the name create exists
         if(args.length <= 1){
-            return "not enough arguments were provided"
+            return {
+                message: "not enough arguments were provided",
+                error : true
+            }
         }
         // now we verify that we have that subCommand registered
         const subCmd : SubCommand | undefined = this.subCommands.get(args[0])
         if(!subCmd){
-            return "no such SubCommand exists"
+            return {
+                message: "no such SubCommand exists",
+                error : true
+            }
         }
         // now we delete the first string from argsSplit
         args = args.slice(1)
