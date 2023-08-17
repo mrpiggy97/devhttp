@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SubCommand, Executor } from "./Command"
+import { SubCommand, Executor, Log } from "./Command"
 
 
 describe("test SubCommand",() => {
     it("tests verification of flags", () => {
-        const testExecutor : Executor = (flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : string => {
+        const testExecutor : Executor = (flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : Log => {
             if(flags === undefined || opt === undefined){
                 console.log("comply with the almight compiler")
             }
-            return "testing"
+            return {
+                message : "testing",
+                error : false
+            }
         }
         const cmd : SubCommand = new SubCommand("test", testExecutor, ["--name", "--port"],[])
         let testQuery : string = "--name container, --port 3000"
@@ -27,5 +30,19 @@ describe("test SubCommand",() => {
         result = cmd.setAndVerifyFlags(testQuery.split(" "))
         console.log(testQuery.split(" "))
         expect(result).toBe(false)
+    })
+
+    it("tests correct output log from command", () => {
+        const testExecutor : Executor = (flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : Log => {
+            return {
+                message : `testing the name is ${flags.get("--name")} the port is ${opt.get("--port")}`,
+                error : false
+            }
+        }
+        const cmd : SubCommand = new SubCommand("test", testExecutor, ["--name"],["--port"])
+        const query : string = "--name fabian --port 3000"
+        const result : Log = cmd.Execute(query.split(" "))
+        expect(result.message).toBe("testing the name is fabian the port is 3000")
+        expect(result.error).toBe(false)
     })
 })
