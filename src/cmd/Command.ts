@@ -33,10 +33,12 @@ export class SubCommand implements ICMD{
             this.flags.set(key,undefined)
         })
         this.optFlags.forEach((_,key) => {
-            this.flags.set(key,undefined)
+            this.optFlags.set(key,undefined)
         })
     }
     public setAndVerifyFlags(flags : string[]) : boolean{
+        // at this point we should have something like this
+        // ['--name', 'fabian', 'link', 'https://www.thelink.com']
         // while not all flags are required, a key value pair is always required
         if(flags.length%2 !== 0){
             return false
@@ -46,42 +48,44 @@ export class SubCommand implements ICMD{
         // does not exist in either required or optional flags then return false
         // and set both flags and optFlags to their default values
         let currentFlag : string = ""
-        flags.map((val, index) => {
-            if(index % 2 === 0 || index === 0){
-                // index is even so it is supposed to be a key, check if that key
-                // is valid
+        for(let i = 0; i < flags.length; i++){
+            const val : string = flags[i]
+            if(i % 2 === 0 || i === 0){
+                // if i is even then we are supposed to be dealing with
+                // a flag that needs to be verified
                 let isValid : boolean = this.flags.has(val)
                 if(!isValid){
-                    // if not present in flags try optionalFlags
+                    // if val is not found in flags try optFlags
                     isValid = this.optFlags.has(val)
                     if(!isValid){
-                        // at this point the provided flags are
-                        // deemed invalid
-                        this.setFlagsAsDefault()
                         return false
                     }
                 }
                 currentFlag = val
             }else{
+                // if i is odd then we are dealing with a value for a flag
                 if(this.flags.has(currentFlag)){
                     this.flags.set(currentFlag,val)
-                }
-                if(this.optFlags.has(currentFlag)){
+                }else{
                     this.optFlags.set(currentFlag,val)
                 }
             }
-        })
+        }
         return true
     }
     public Execute(args : string[]) : Log{
         const flagsValid : boolean = this.setAndVerifyFlags(args)
+        console.log(`flags are ${flagsValid}`)
         if(!flagsValid){
             return {
                 message:"flags provided are not valid",
                 error : true
             }
         }
-        return this.executor(this.flags,this.optFlags)
+        const flagsCopy : Map<string,string | undefined> = structuredClone(this.flags)
+        const optFlagsCopy : Map<string,string | undefined> = structuredClone(this.optFlags)
+        this.setFlagsAsDefault()
+        return this.executor(flagsCopy,optFlagsCopy)
     }
 }
 
@@ -101,7 +105,7 @@ export class Command implements ICMD{
         // link will be an optional flag while name required
         // create is the subCommand, so the first step would be to verify
         // that a subCommand with the name create exists
-        if(args.length <= 1){
+        if(args.length <= 2){
             return {
                 message: "not enough arguments were provided",
                 error : true
