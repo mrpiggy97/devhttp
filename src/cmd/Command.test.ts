@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SubCommand, Executor, Log, Command } from "./Command"
+import { SubCommand, Executor, Log, Command, addCommand, Execute } from "./Command"
 
 
 describe("test SubCommand",() => {
@@ -59,6 +59,34 @@ describe("test Command", () => {
         const query : string = "greet --wrong dummy"
         const result : Log = Cmd.Execute(query.split(" "))
         expect(result.message).toBe("flags provided are not valid")
+        expect(result.error).toBe(true)
+    })
+})
+
+describe("test Execute function", () => {
+    const testExecutor : Executor = (flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : Log => {
+        let message : string = `hello my name is ${flags.get("--name")}`
+        if(opt.has("--year")){
+            message = `${message} year is ${opt.get("--year")}`
+        }
+        return {
+            message : message,
+            error : false
+        }
+    }
+    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name"],["--year"])
+    const Cmd : Command = new Command("app", [subCmd])
+    addCommand(Cmd)
+    it("test correct functionality with correct input", () => {
+        const query : string = "app greet --name fabian --year 2023"
+        const result : Log = Execute(query)
+        expect(result.message).toBe("hello my name is fabian year is 2023")
+        expect(result.error).toBe(false)
+    })
+    it("tests correct functionality with incorrect input", () => {
+        const query : string = "resolve greet --name rod"
+        const result : Log = Execute(query)
+        expect(result.message).toBe("no such command exists")
         expect(result.error).toBe(true)
     })
 })

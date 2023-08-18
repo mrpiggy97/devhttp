@@ -74,6 +74,7 @@ export class SubCommand implements ICMD{
         return true
     }
     public Execute(args : string[]) : Log{
+        // at this point we should get something like [--name, fabian, --port, 3000]
         const flagsValid : boolean = this.setAndVerifyFlags(args)
         if(!flagsValid){
             return {
@@ -100,7 +101,7 @@ export class Command implements ICMD{
     }
     public Execute(args : string[]) : Log{
         // at this stage args should look something similar to
-        // create --name hello --link https://www.thelink.com
+        // [create, --name, hello, --link, https://www.thelink.com]
         // link will be an optional flag while name required
         // create is the subCommand, so the first step would be to verify
         // that a subCommand with the name create exists
@@ -124,4 +125,34 @@ export class Command implements ICMD{
         // so we pass the rest of the execution to the subCommand
         return subCmd.Execute(args)
     }
+}
+
+export const Cmd : Map<string,Command> = new Map<string,Command>()
+
+export function addCommand(cmd : Command) : void{
+    Cmd.set(cmd.name,cmd)
+}
+export function removeCommand(cmd : Command) : void{
+    Cmd.delete(cmd.name)
+}
+
+export function Execute(args : string) : Log{
+    // at this point we should get something like
+    // app create --name extension --port 3000
+    let argsArray : string[] = args.split(" ")
+    if(argsArray.length < 4){
+        return {
+            message: "not enough arguments were provided",
+            error : true
+        }
+    }
+    const selectedCmd : Command | undefined = Cmd.get(argsArray[0])
+    if(!selectedCmd){
+        return {
+            message : "no such command exists",
+            error : true
+        }
+    }
+    argsArray = argsArray.splice(1)
+    return selectedCmd.Execute(argsArray)
 }
