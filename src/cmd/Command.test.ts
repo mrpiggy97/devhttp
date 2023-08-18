@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SubCommand, Executor, Log } from "./Command"
+import { SubCommand, Executor, Log, Command } from "./Command"
 
 
 describe("test SubCommand",() => {
@@ -33,5 +33,32 @@ describe("test SubCommand",() => {
         const result : Log = cmd.Execute(query.split(" "))
         expect(result.error).toBe(true)
         expect(result.message).toBe("flags provided are not valid")
+    })
+})
+
+describe("test Command", () => {
+    const testExecutor : Executor = (flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : Log => {
+        let message : string = `hello my name is ${flags.get("--name")}`
+        if(opt.has("--year")){
+            message = `${message} year is ${opt.get("--year")}`
+        }
+        return {
+            message : message,
+            error : false
+        }
+    }
+    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name"],["--year"])
+    const Cmd : Command = new Command("app", [subCmd])
+    it("tests execution of command with correct input", () => {
+        const query : string = "greet --name fabian --year 2023"
+        const result : Log = Cmd.Execute(query.split(" "))
+        expect(result.message).toBe("hello my name is fabian year is 2023")
+        expect(result.error).toBe(false)
+    })
+    it("tests execution of command with incorrect input", () => {
+        const query : string = "greet --wrong dummy"
+        const result : Log = Cmd.Execute(query.split(" "))
+        expect(result.message).toBe("flags provided are not valid")
+        expect(result.error).toBe(true)
     })
 })

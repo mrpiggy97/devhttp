@@ -75,7 +75,6 @@ export class SubCommand implements ICMD{
     }
     public Execute(args : string[]) : Log{
         const flagsValid : boolean = this.setAndVerifyFlags(args)
-        console.log(`flags are ${flagsValid}`)
         if(!flagsValid){
             return {
                 message:"flags provided are not valid",
