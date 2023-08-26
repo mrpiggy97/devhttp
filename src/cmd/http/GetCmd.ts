@@ -57,4 +57,4 @@ function get(flags : Map<string,string | undefined>, opt : Map<string,string | u
     return log
 }
 
-export const getCmd : SubCommand = new SubCommand("get", get,["--url", "--headers"],[])
+export const getCmd : SubCommand = new SubCommand("get", get,["--url", "--headers"],[], "makes a GET http request")
