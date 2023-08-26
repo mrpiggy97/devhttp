@@ -1,3 +1,4 @@
+
 export type Log = {
     message : string,
     error : boolean
@@ -15,12 +16,14 @@ export class SubCommand implements ICMD{
     executor : Executor
     flags : Map<string,string | undefined>
     optFlags : Map<string,string | undefined>
+    description: string
 
-    constructor(n : string, exe : Executor, f : string[], opt : string[]){
+    constructor(n : string, exe : Executor, f : string[], opt : string[], descrip : string){
         this.name = n
         this.executor = exe
         this.flags = new Map<string, string | undefined>
         this.optFlags = new Map<string, string | undefined>
+        this.description = descrip
         f.map((flag) => {
             this.flags.set(flag, undefined)
         })
@@ -92,12 +95,38 @@ export class SubCommand implements ICMD{
 export class Command implements ICMD{
     name : string
     subCommands : Map<string,SubCommand>
+    helpExecutor : Executor
+    help : SubCommand
     constructor(n : string, commands : SubCommand[]){
         this.name = n
         this.subCommands = new Map<string,SubCommand>()
         commands.map((cmd) => {
             this.subCommands.set(cmd.name,cmd)
         })
+        this.helpExecutor = () : Log => {
+            let finalStr = ``
+            this.subCommands.forEach((subCmd) => {
+                finalStr = `${finalStr}\n${subCmd.name} ${subCmd.description}`
+                let whitspaces = ""
+                for(let i=0; i < subCmd.name.length+1; i++){
+                    whitspaces = `${whitspaces} `
+                }
+                finalStr = `${finalStr}\n${whitspaces}flags`
+                subCmd.flags.forEach((_,key) => {
+                    finalStr = `${finalStr}\n${whitspaces}${key}`
+                })
+                finalStr = `${finalStr}\n${whitspaces}optional flags`
+                subCmd.optFlags.forEach((_,key) => {
+                    finalStr = `${finalStr}\n${whitspaces}${key}`
+                })
+            })
+            return{
+                message: finalStr,
+                error : false
+            }
+        }
+        this.help = new SubCommand("help", this.helpExecutor,[],[],"run if you need help")
+        this.subCommands.set("help", this.help)
     }
     public Execute(args : string[]) : Log{
         // at this stage args should look something similar to
@@ -105,7 +134,7 @@ export class Command implements ICMD{
         // link will be an optional flag while name required
         // create is the subCommand, so the first step would be to verify
         // that a subCommand with the name create exists
-        if(args.length <= 2){
+        if(args.length < 1){
             return {
                 message: "not enough arguments were provided",
                 error : true
@@ -140,7 +169,7 @@ export function Execute(args : string) : Log{
     // at this point we should get something like
     // app create --name extension --port 3000
     let argsArray : string[] = args.split(" ")
-    if(argsArray.length < 4){
+    if(argsArray.length < 2){
         return {
             message: "not enough arguments were provided",
             error : true

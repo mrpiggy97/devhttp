@@ -9,7 +9,7 @@ describe("test SubCommand",() => {
             error : false
         }
     }
-    const cmd : SubCommand = new SubCommand("test", testExecutor, ["--name"],["--port"])
+    const cmd : SubCommand = new SubCommand("test", testExecutor, ["--name"],["--port"], "a test command")
     it("tests verification of flags with correct input", () => {
         const testQuery : string = "--name container --port 3000"
         const result = cmd.setAndVerifyFlags(testQuery.split(" "))
@@ -47,7 +47,7 @@ describe("test Command", () => {
             error : false
         }
     }
-    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name"],["--year"])
+    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name"],["--year"], "a test commmand")
     const Cmd : Command = new Command("app", [subCmd])
     it("tests execution of command with correct input", () => {
         const query : string = "greet --name fabian --year 2023"
@@ -74,7 +74,7 @@ describe("test Execute function", () => {
             error : false
         }
     }
-    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name"],["--year"])
+    const subCmd : SubCommand = new SubCommand("greet", testExecutor, ["--name", "--age"],["--year"], "this is a test command")
     const Cmd : Command = new Command("app", [subCmd])
     addCommand(Cmd)
     it("test correct functionality with correct input", () => {
@@ -88,5 +88,10 @@ describe("test Execute function", () => {
         const result : Log = Execute(query)
         expect(result.message).toBe("no such command exists")
         expect(result.error).toBe(true)
+    })
+    it("tests help command", () => {
+        const query = "app help"
+        const result = Execute(query)
+        expect(result.error).toBe(false)
     })
 })
