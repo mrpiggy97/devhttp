@@ -19,7 +19,7 @@ export function getHeaders(headers : string) : Map<string,string> | undefined{
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function get(flags : Map<string,string | undefined>, opt : Map<string,string | undefined>) : Log{
+function get(flags : Map<string,string | undefined>, _ : Map<string,string | undefined>) : Log{
     const url : string | undefined = flags.get("url")
     const headers : string | undefined = flags.get("headers")
     if(url === undefined || headers === undefined){
