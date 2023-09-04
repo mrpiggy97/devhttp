@@ -1,6 +1,6 @@
 import { Command, Log, Cmd } from "./Command";
 
-export function Execute(args : string) : Log{
+export default function Execute(args : string) : Log{
     // at this point we should get something like
     // app create --name extension --port 3000
     let argsArray : string[] = args.split(" ")
