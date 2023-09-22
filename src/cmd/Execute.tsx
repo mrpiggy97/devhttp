@@ -1,4 +1,5 @@
-import { Command, Cmd, Log } from "./Command";
+import { Command, Log } from "./Command";
+import { Cmd } from "./cmd";
 import Error from "./Error";
 
 export default function Execute(args : string) : Log{
