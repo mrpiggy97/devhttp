@@ -56,4 +56,9 @@ describe("test Command functionalities and methods", () => {
         expect(result.props.flags.get("--name")).toBe("chris")
         expect(result.props.optFlags.get("--age")).toBe("25")
     })
+    it("tests help sub command", () => {
+        const testInput = "help"
+        const result = mainCmd.Execute(testInput.split(" "))
+        expect(result.props.flags.get("--message")).toBe(undefined)
+    })
 })
