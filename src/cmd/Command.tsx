@@ -1,6 +1,8 @@
 import Error from "./Error"
 
 import { Executor, ExecutorProps } from "./Executor"
+import SubCommandComponent from "./SubCommandComponent"
+import "./Command.css"
 
 export type Log = {
     props : ExecutorProps
@@ -48,6 +50,9 @@ export class SubCommand implements ICMD{
         // required flags or optional flags, if even a single value of
         // does not exist in either required or optional flags then return false
         // and set both flags and optFlags to their default values
+        if(this.flags.size === 0 && this.optFlags.size === 0){
+            return true
+        }
         let currentFlag = ""
         let currentVal = ""
         for(let i=0; i < flags.length; i++){
@@ -136,23 +141,6 @@ export class SubCommand implements ICMD{
     }
 }
 
-type SubCommandComponentProps = {
-    CMD : SubCommand
-}
-
-function SubCommandComponent(props : SubCommandComponentProps) : JSX.Element{
-    const flagsArray : string[] = Array.from(props.CMD.flags.keys())
-    const optionalFlags : string[] = Array.from(props.CMD.optFlags.keys())
-    return(
-        <div>
-            <span>{props.CMD.name}</span>
-            <span>{props.CMD.description}</span>
-            {flagsArray.map((str) => <span>{str}</span>)}
-            {optionalFlags.map((str) => <span>{str}</span>)}
-        </div>
-    )
-}
-
 export class Command implements ICMD{
     name : string
     subCommands : Map<string,SubCommand>
@@ -168,8 +156,12 @@ export class Command implements ICMD{
         this.helpExecutor = (_ : ExecutorProps) : JSX.Element => {
             const cmds = Array.from(this.subCommands.values())
             return(
-                <div>
-                    {cmds.map((cmd) => <SubCommandComponent CMD={cmd} />)}
+                <div className="help">
+                    {cmds.map((cmd) => <SubCommandComponent
+                    name={cmd.name}
+                    description={cmd.description}
+                    flags={cmd.flags}
+                    optFlags={cmd.optFlags} />)}
                 </div>
             )
         }
