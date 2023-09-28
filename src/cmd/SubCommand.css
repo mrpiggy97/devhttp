@@ -1,0 +1,24 @@
+div.sub-command{
+    display: grid;
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 50%;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 50%);
+    grid-template-rows: auto;
+    grid-template-areas: "basic-info basic-info"
+                         ". flags";
+    font-size: large;
+}
+
+div.basic-info{
+    display: grid;
+    grid-area: basic-info;
+    justify-items: left;
+    grid-template-columns: repeat(2, 50%);
+}
+div.flags{
+    display: grid;
+    grid-area: flags;
+    justify-items: left;
+}
