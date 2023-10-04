@@ -1,3 +1,7 @@
 div.help{
     display: grid;
+    align-self: baseline;
+    max-height: 100px;
+    min-height: 100px;
+    border: solid 2px green;
 }

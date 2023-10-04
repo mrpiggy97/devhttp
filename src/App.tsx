@@ -1,34 +1,45 @@
-import { FormEvent, useRef, useState } from 'react'
-import { Log } from './cmd/Command'
+import React, { FormEvent, useRef, useState } from 'react'
+import { Executor, ExecutorProps } from './cmd/Executor'
 import Execute from './cmd/Execute'
 import './App.css'
 
+type previousCmd = {
+  executor : Executor,
+  executorProps : ExecutorProps
+  command : string
+}
+
+function CommandComponent(props : previousCmd) : JSX.Element{
+  return(
+    <React.Fragment>
+      <span className='command'>devhttp/$ {props.command}</span>
+      <props.executor flags={props.executorProps.flags} optFlags={props.executorProps.optFlags} />
+    </React.Fragment>
+  )
+}
+
 function App() {
-  const [logs, setLogs] = useState<Log[]>([])
-  const [cmdArgs, setCmdArgs] = useState<string[]>([])
-  const cmdRef = useRef<HTMLTextAreaElement>(null)
+  const [previousCommands, setPreviousCommands] = useState<previousCmd[]>([])
+  const cmdRef = useRef<HTMLInputElement>(null)
   const runCmd = (e : FormEvent) : void => {
     e.preventDefault()
     const args = cmdRef.current
     if(args){
       const result = Execute(args.value)
-      setLogs((prev) => [...prev,result])
-      setCmdArgs((prev) => [...prev, args.value])
+      const newCmd : previousCmd = {
+        executor: result.executor,
+        executorProps : result.props,
+        command: args.value
+      }
+      setPreviousCommands((prev) => [...prev,newCmd])
     }
   }
   return (
     <div id="app">
-      {logs.map((log,index) => {
-        return (
-          <div className='previous-command'>
-            <span className='command'>devhttp/$ {cmdArgs[index]}</span>
-            <log.executor flags={log.props.flags} optFlags={log.props.optFlags}/>
-          </div>
-        )
-      })}
-        <form className="command" onSubmit={runCmd}>
+      {previousCommands.map((cmd) => <CommandComponent executor={cmd.executor} executorProps={cmd.executorProps} command={cmd.command} />)}
+        <form id="command" onSubmit={runCmd}>
             <label htmlFor="command" className="name">devhttp/$</label>
-            <textarea name="console" id="command"className="commands" ref={cmdRef}/>
+            <input name="command" type='text' id="command" ref={cmdRef}/>
         </form>
     </div>
   )
