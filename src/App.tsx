@@ -39,7 +39,7 @@ function App() {
       {previousCommands.map((cmd) => <CommandComponent executor={cmd.executor} executorProps={cmd.executorProps} command={cmd.command} />)}
         <form id="command" onSubmit={runCmd}>
             <label htmlFor="command" className="name">devhttp/$</label>
-            <input name="command" type='text' id="command" ref={cmdRef}/>
+            <input name="command" type='text' id="command-input" ref={cmdRef}/>
         </form>
     </div>
   )
