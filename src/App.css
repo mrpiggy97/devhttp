@@ -2,7 +2,7 @@ div#app{
   display: grid;
   grid-template-columns: 100%;
   row-gap: 1px;
-  align-items: baseline;
+  align-content: start;
   min-height: 110vh;
   min-width: 99vw;
   background-color: black;
@@ -18,26 +18,26 @@ form#command{
   min-height: 25px;
   max-height: 25px;
   grid-template-rows: 100%;
-  grid-template-columns: 15% 85%;
+  grid-template-columns: 11% 89%;
   align-items: baseline;
-  border: solid 2px yellow;
   background-color: transparent;
 }
 
 label.name{
   color: #1aef49;
 }
-input[type="text"]#command{
+input[type="text"]#command-input{
   display: grid;
   color: #1aef49;
   background-color: transparent;
   outline: none;
-  border: solid 2px white;
+  border: none;
+  font-size: large;
+  min-height: 100%;
 }
 
 span.command{
   color: #1aef49;
-  border: solid 2px red;
 }
 span.logs{
   color: aqua;
