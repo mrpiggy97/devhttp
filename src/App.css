@@ -19,8 +19,10 @@ form#command{
   max-height: 25px;
   grid-template-rows: 100%;
   grid-template-columns: 11% 89%;
+  column-gap: 8px;
   align-items: baseline;
   background-color: transparent;
+
 }
 
 label.name{
@@ -33,7 +35,9 @@ input[type="text"]#command-input{
   outline: none;
   border: none;
   font-size: large;
+  font-family: monospace;
   min-height: 100%;
+  caret-shape: block;
 }
 
 span.command{
