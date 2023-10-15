@@ -11,17 +11,19 @@ export default function ShowIpExecutor(_props : ExecutorProps) : JSX.Element{
     const url = "https://api.ipify.org?format=json"
     const [requestFailed, setRequestFailed] = useState(false)
     const [errMessage, setErrMessage] = useState("")
+    const [loading, setLoading] = useState(true)
     const [response, setResponse] = useState<apiResponse>({
         ip:""
     })
     const makeRequest = () : void => {
         axios.get(url).then((res) => {
-            const newResponse = JSON.parse(res.data) as apiResponse
+            const newResponse = res.data as apiResponse
             setResponse(newResponse)
         }).catch((err : Error) => {
             setRequestFailed(true)
             setErrMessage(err.message)
-        })        
+        })
+        setLoading(false)
     }
     useEffect(() => {
         makeRequest()
@@ -30,6 +32,13 @@ export default function ShowIpExecutor(_props : ExecutorProps) : JSX.Element{
         return(
             <div>
                 <span>{errMessage}</span>
+            </div>
+        )
+    }
+    if(loading){
+        return(
+            <div>
+                <span>loading...</span>
             </div>
         )
     }
