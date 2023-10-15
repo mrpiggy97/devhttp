@@ -1,5 +1,6 @@
 import { httpCmd } from "./http/httpCmd";
 import { Command } from "./Command";
+import { showCmd } from "./show/showCmd";
 
 export const Cmd : Map<string,Command> = new Map<string,Command>()
 
@@ -12,4 +13,5 @@ export function removeCommand(cmd : Command) : void{
 
 export default function startConsole() : void{
     addCommand(httpCmd)
+    addCommand(showCmd)
 }
