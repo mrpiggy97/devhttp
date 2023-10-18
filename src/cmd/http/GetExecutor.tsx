@@ -1,5 +1,4 @@
 import { ExecutorProps } from "../Executor";
-import Error from "../Error";
 import { useEffect, useState } from "react";
 
 function getHeaders(headers : string | undefined) : Map<string,string> | undefined{
@@ -27,69 +26,51 @@ function getHeaders(headers : string | undefined) : Map<string,string> | undefin
 export default function GetExecutor(props : ExecutorProps) : JSX.Element{
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(true)
-    const flags = new Map<string, string | undefined>()
-    const optflags = new Map<string, string | undefined>()
-    const url : string | undefined = props.flags.get("--url")
-    let urlErr = ""
-    let headersErr = ""
-    let headersMappingErr = ""
+    const url : string = props.flags.get("--url") as string
     const [message, setMessage] = useState("")
-    if(!url){
-        urlErr = "url is a required flag"
-        setMessage(urlErr)
-        setError(true)
-    }
-    const headers : string | undefined = props.flags.get("--headers")
-    if(!headers){
-        headersErr = "headers is a required flag"
-        if(!error){
+    const headers : string | undefined = props.optFlags.get("--headers")
+    let headersMapped : Map<string,string> | undefined
+    if(headers){
+        headersMapped = getHeaders(headers)
+        if(!headersMapped){
+            setMessage("failed to map headers, make sure each key has a value")
             setError(true)
-            setMessage(headersErr)
-        }else{
-            setMessage((prev) => `${prev} ${headersErr}`)
-        }
-    }
-    const headersMapped = getHeaders(headers)
-    if(!headersMapped){
-        headersMappingErr = "failed to map headers, make sure each key has a value"
-        if(!error){
-            setError(true)
-            setMessage(headersMappingErr)
-        }else{
-            setMessage((prev) => `${prev} ${headersMappingErr}`)
-        }
-    }
-    if(error){
-        flags.set("--message", message)
-        setLoading(false)
+        }        
     }
     useEffect(() => {
-        if(url !== undefined && headersMapped !== undefined){
-            const options = {
+        let options
+        if(headersMapped){
+            options = {
                 method : "GET",
                 headers: Object.fromEntries(headersMapped)
             }
-            fetch(url,options).then((res) => {
-                if(res.ok){
-                    setMessage(`status ${res.status} ${res.json()}`)
-                }else{
-                    setMessage(`status ${res.status} ${res.statusText}`)
-                }
-            }).catch(() => {
-                setMessage("there was an error trying to send request")
-                setError(true)
-            })
-            setLoading(false)
+        }else{
+            options = {
+                method: "GET"
+            }
         }
+        fetch(url,options).then((res) => {
+            if(res.ok){
+                setMessage(`status ${res.status} ${res.json()}`)
+            }else{
+                setMessage(`status ${res.status} ${res.statusText}`)
+            }
+        }).catch(() => {
+            setMessage("there was an error trying to send request")
+            setError(true)
+        })
+        setLoading(false)
     },[])
     if(loading){
         return (
             <div>loading...</div>
         )
     }
-    if(error && !loading){
+    if(error){
         return(
-            <Error flags={flags} optFlags={optflags}/>
+            <div>
+                <span>{message}</span>
+            </div>
         )
     }
     return (
