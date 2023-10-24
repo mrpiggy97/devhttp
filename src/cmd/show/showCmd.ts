@@ -1,7 +1,7 @@
 import { Command, SubCommand } from "../Command";
 import ShowIpExecutor from "./ShowIpExecutor";
-import FileSizeExecutor from "./FileSizeExecutor";
+import ExtensionSizeExecutor from "./ExtensionSizeExecutor";
 
 const ipCmd = new SubCommand("ip", ShowIpExecutor, [],[],"show your current ip address")
-const fileSizeCmd = new SubCommand("file-size", FileSizeExecutor, [],[],"shows the size of the current html5 document")
-export const showCmd = new Command("show", [ipCmd, fileSizeCmd])
+const extensionSizeCmd = new SubCommand("extension-size", ExtensionSizeExecutor, [],[],"shows the size of the extension")
+export const showCmd = new Command("show", [ipCmd, extensionSizeCmd])
