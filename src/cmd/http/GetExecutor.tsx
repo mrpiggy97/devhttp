@@ -1,5 +1,6 @@
 import { ExecutorProps } from "../Executor";
 import { useEffect, useState } from "react";
+import axios, { AxiosRequestConfig } from "axios";
 
 function getHeaders(headers : string | undefined) : Map<string,string> | undefined{
     if(headers === undefined){
@@ -29,7 +30,7 @@ export default function GetExecutor(props : ExecutorProps) : JSX.Element{
     const url : string = props.flags.get("--url") as string
     const [message, setMessage] = useState("")
     const headers : string | undefined = props.optFlags.get("--headers")
-    let headersMapped : Map<string,string> | undefined
+    let headersMapped : Map<string,string> | undefined = undefined
     if(headers){
         headersMapped = getHeaders(headers)
         if(!headersMapped){
@@ -37,8 +38,8 @@ export default function GetExecutor(props : ExecutorProps) : JSX.Element{
             setError(true)
         }        
     }
-    useEffect(() => {
-        let options
+    const makeRequest = () : void => {
+        let options : AxiosRequestConfig
         if(headersMapped){
             options = {
                 method : "GET",
@@ -49,17 +50,21 @@ export default function GetExecutor(props : ExecutorProps) : JSX.Element{
                 method: "GET"
             }
         }
-        fetch(url,options).then((res) => {
-            if(res.ok){
-                setMessage(`status ${res.status} ${res.json()}`)
-            }else{
-                setMessage(`status ${res.status} ${res.statusText}`)
-            }
-        }).catch(() => {
-            setMessage("there was an error trying to send request")
+        axios.get(url,options).then((res) => {
+            const decodedRes = JSON.stringify(res.data)
+            setMessage(`${decodedRes}`)
+        }).catch((err : Error) => {
             setError(true)
+            setMessage(err.message)
         })
+    }
+
+    useEffect(() => {
+        if(!error){
+            makeRequest()
+        }
         setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     if(loading){
         return (
