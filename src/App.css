@@ -5,8 +5,8 @@ div#app{
   align-content: start;
   min-height: 110vh;
   min-width: 99vw;
-  background-color: black;
-  color: red;
+  background-color: rgb(48, 2, 48);
+  color: rgb(0, 247, 255);
   font-family: monospace;
   font-size: large;
 }
