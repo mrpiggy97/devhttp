@@ -37,6 +37,7 @@ function App() {
       setPreviousCommands((prev) => [...prev,newCmd])
     }
   }
+  // this effect will scroll user to the bottom after previousCommands changes
   useEffect(() => {
     if(previousCommands.length > 0){
       scrollContainerToBottom()
