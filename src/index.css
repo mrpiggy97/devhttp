@@ -1,11 +1,10 @@
-@font-face {
-  font-family: Cyber;
-  src: url("https://assets.codepen.io/605876/Blender-Pro-Bold.otf");
-  font-display: swap;
+body{
+  margin: 0px;
 }
 
-
-body {
-  margin: 0;
-  font-family: 'Cyber', sans-serif;
+div#root{
+  margin: 0px;
+  min-width: 99vw;
+  max-width: 99vw;
+  background-color: rgb(48, 2, 48);
 }
