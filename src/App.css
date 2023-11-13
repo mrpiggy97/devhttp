@@ -4,11 +4,12 @@ div#app{
   row-gap: 1px;
   align-content: start;
   min-height: 110vh;
-  min-width: 99vw;
-  background-color: rgb(48, 2, 48);
+  min-width: 99%;
+  max-width: 99%;
   color: rgb(0, 247, 255);
   font-family: monospace;
   font-size: large;
+  margin: 0px;
 }
 
 form#command{
@@ -37,7 +38,9 @@ input[type="text"]#command-input{
   font-size: large;
   font-family: monospace;
   min-height: 100%;
-  caret-shape: block;
+  caret-shape: underscore;
+  caret-color: aqua;
+  overflow-x:scroll;
 }
 
 span.command{
