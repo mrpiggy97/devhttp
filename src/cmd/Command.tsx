@@ -16,40 +16,34 @@ interface ICMD{
 export class SubCommand implements ICMD{
     name : string
     executor : Executor
-    flags : Map<string,string | undefined> | null
-    optFlags : Map<string,string | undefined> | null
+    flags : Map<string,string | undefined>
+    optFlags : Map<string,string | undefined>
     description: string
 
     constructor(n : string, exe : Executor, flags : string[], optFlags : string[], descrip : string){
         this.name = n
         this.executor = exe
-        this.flags = null
-        this.optFlags = null
+        this.flags = new Map<string,string | undefined>()
+        this.optFlags = new Map<string,string | undefined>()
         this.description = descrip
         if(flags.length > 0){
-            this.flags = new Map<string, string | undefined>()
             flags.map((flag) => {
-                this.flags?.set(flag, undefined)
+                this.flags.set(flag, undefined)
             })
         }
         if(this.optFlags){
-            this.optFlags = new Map<string,string | undefined>()
             optFlags.map((flag) => {
-                this.optFlags?.set(flag,undefined)
+                this.optFlags.set(flag,undefined)
             })
         }
     }
     public setFlagsAsDefault() : void{
-        if(this.flags){
-            this.flags.forEach((_,key) => {
-                this.flags?.set(key,undefined)
-            })
-        }
-        if(this.optFlags){
-            this.optFlags.forEach((_,key) => {
-                this.optFlags?.set(key,undefined)
-            })
-        }
+        this.flags.forEach((_,key) => {
+            this.flags?.set(key,undefined)
+        })
+        this.optFlags.forEach((_,key) => {
+            this.optFlags?.set(key,undefined)
+        })
     }
     public setAndVerifyFlags(flags : string[]) : boolean{
         // at this point we should have something like this
