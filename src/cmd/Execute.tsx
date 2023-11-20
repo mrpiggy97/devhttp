@@ -1,6 +1,7 @@
 import { Command, Log } from "./Command";
 import { Cmd } from "./cmd";
 import Error from "./Error";
+import ls from "./ls";
 
 export default function Execute(args : string) : Log{
     // at this point we should get something like
@@ -8,8 +9,17 @@ export default function Execute(args : string) : Log{
     let argsArray : string[] = args.split(" ")
     if(argsArray.length < 2){
         const flags = new Map<string, string | undefined>()
-        flags.set("--message", "not enough arguments were provided")
         const optFlags = new Map<string, string | undefined>()
+        if(argsArray.length === 1 && argsArray[0] === "ls"){
+            return{
+                props:{
+                    flags: flags,
+                    optFlags: optFlags
+                },
+                executor: ls
+            }
+        }
+        flags.set("--message", "not enough arguments were provided")
         return {
             props: {
                 flags: flags,
