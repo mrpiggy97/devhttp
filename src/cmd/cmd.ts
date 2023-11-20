@@ -10,6 +10,9 @@ export function addCommand(cmd : Command) : void{
 export function removeCommand(cmd : Command) : void{
     Cmd.delete(cmd.name)
 }
+export function getCommands() : Command[]{
+    return Array.from(Cmd.values())
+}
 
 export default function startConsole() : void{
     addCommand(httpCmd)
