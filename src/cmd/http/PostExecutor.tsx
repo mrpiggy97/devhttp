@@ -4,7 +4,11 @@ import { ExecutorProps } from "../Executor";
 export default function PostExecutor(props : ExecutorProps) : JSX.Element{
     const data = props.flags.get("--data") as string
     const token = props.flags.get("--token") as string
-    const url = props.flags.get("--url") as string
+    let url = props.flags.get("--url") as string
+    // check if url is an alias for an actual url
+    if(localStorage.getItem(url)){
+        url = localStorage.getItem(url) as string
+    }
     const options : RequestInit = {
         method: "POST",
         headers:{

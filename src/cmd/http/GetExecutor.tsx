@@ -27,7 +27,11 @@ function getHeaders(headers : string | undefined) : Map<string,string> | undefin
 export default function GetExecutor(props : ExecutorProps) : JSX.Element{
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(true)
-    const url : string = props.flags.get("--url") as string
+    let url : string = props.flags.get("--url") as string
+    // check if url is an alias for an actual url
+    if(localStorage.getItem(url)){
+        url = localStorage.getItem(url) as string
+    }
     const [message, setMessage] = useState("")
     const headers : string | undefined = props.optFlags.get("--headers")
     let headersMapped : Map<string,string> | undefined = undefined
