@@ -10,7 +10,7 @@ export default function ls(_props : ExecutorProps) : JSX.Element{
     },[])
     return(
         <div>
-            {commands.map((cmd) => <span>{cmd.name}</span>)}
+            {commands.map((cmd) => <div><span>{cmd.name}</span></div>)}
         </div>
     )
 }
