@@ -1,19 +1,20 @@
 {
-    "manifest_version": 2,
-    "name": "devhttp",
-    "version": "1.0",
-    "description": "a terminal for the browser",
-    "browser_action": {
-      "default_popup": "index.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["main.js"],
-        "run_at": "document_end"
-      }
-    ],
-    "permissions": ["<all_urls>"],
-    "icons": ["./icon-2.png"]
-  }
+  "manifest_version": 3,
+  "name": "devhttp",
+  "version": "1.0",
+  "description": "A terminal for the browser",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "48": "icon-2.png",
+      "128": "icon-2.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "js": ["main.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
   
