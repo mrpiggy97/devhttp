@@ -19,8 +19,8 @@ form#command{
   min-height: 25px;
   max-height: 25px;
   grid-template-rows: 100%;
-  grid-template-columns: 11% 89%;
-  column-gap: 8px;
+  grid-template-columns: 7% 93%;
+  column-gap: 1px;
   align-items: baseline;
   background-color: transparent;
 
@@ -38,7 +38,6 @@ input[type="text"]#command-input{
   font-size: large;
   font-family: monospace;
   min-height: 100%;
-  caret-shape: underscore;
   caret-color: aqua;
   overflow-x:scroll;
 }
