@@ -62,6 +62,8 @@ export default function SpaceInvadersExecutor(_props: ExecutorProps): JSX.Elemen
 
   // Handle keyboard input
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       keysPressed.current.add(e.key.toLowerCase());
       if (e.key === " ") {
@@ -79,8 +81,9 @@ export default function SpaceInvadersExecutor(_props: ExecutorProps): JSX.Elemen
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      keysPressed.current.clear();
     };
-  }, []);
+  }, [isOpen]);
 
   // Game loop
   useEffect(() => {
